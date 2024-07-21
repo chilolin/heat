@@ -1,9 +1,9 @@
 import fs from 'fs'
+import path from 'path'
 
 function hotTopic(id) {
-  const jsonObject = JSON.parse(
-    fs.readFileSync('assets/hot_topic.json', 'utf8')
-  )
+  const dataPath = path.join(process.cwd(), 'public', 'hot_topic.json')
+  const jsonObject = JSON.parse(fs.readFileSync(dataPath, 'utf8'))
   const news = jsonObject.news
   const topic = news.find((topic) => topic.id === id)
 
@@ -120,7 +120,8 @@ function splitBySentiment(contents, duration, start, end) {
 export async function GET(req) {
   const url = new URL(req.url)
   const params1 = new URLSearchParams(url.search)
-  const jsonObject = JSON.parse(fs.readFileSync('assets/data_all.json', 'utf8'))
+  const dataPath = path.join(process.cwd(), 'public', 'data_all.json')
+  const jsonObject = JSON.parse(fs.readFileSync(dataPath, 'utf8'))
 
   const [data, hotTopics] = splitBySentiment(
     jsonObject.content,
