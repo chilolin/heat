@@ -53,35 +53,37 @@ function Graph({ data, loading, setLoading, t, setT, marks }) {
   const [intervalId, setIntervalId] = useState(null)
 
   useEffect(() => {
-    const graphElement = document.getElementById('Graph')
-    if (graphElement && data.length > 0) {
-      let newT = t
-      if (t >= data[0].length) {
-        newT = 0
-        setT(0)
+    if (typeof window !== 'undefined') {
+      const graphElement = document.getElementById('Graph')
+      if (graphElement && data.length > 0) {
+        let newT = t
+        if (t >= data[0].length) {
+          newT = 0
+          setT(0)
+        }
+        let tdata = []
+        tdata = tdata.concat(data[0][newT])
+        tdata = tdata.concat(data[1][newT])
+        tdata = tdata.concat(data[2][newT])
+        tdata = tdata.concat({
+          alphahull: 0.1,
+          opacity: 0.1,
+          type: 'mesh3d',
+          x: [7, 13],
+          y: [6, 13],
+          z: [-1, 13],
+        })
+        const timestamp =
+          data[0][newT]?.timestamp?.[1] ??
+          data[1][newT]?.timestamp?.[1] ??
+          data[2][newT]?.timestamp?.[1]
+        const date = new Date(timestamp)
+        layout.title = `${date.getFullYear()}年${
+          date.getMonth() + 1
+        }月${date.getDate()}日`
+        Plotly.newPlot('Graph', tdata, layout)
+        setLoading(false)
       }
-      let tdata = []
-      tdata = tdata.concat(data[0][newT])
-      tdata = tdata.concat(data[1][newT])
-      tdata = tdata.concat(data[2][newT])
-      tdata = tdata.concat({
-        alphahull: 0.1,
-        opacity: 0.1,
-        type: 'mesh3d',
-        x: [7, 13],
-        y: [6, 13],
-        z: [-1, 13],
-      })
-      const timestamp =
-        data[0][newT]?.timestamp?.[1] ??
-        data[1][newT]?.timestamp?.[1] ??
-        data[2][newT]?.timestamp?.[1]
-      const date = new Date(timestamp)
-      layout.title = `${date.getFullYear()}年${
-        date.getMonth() + 1
-      }月${date.getDate()}日`
-      Plotly.newPlot('Graph', tdata, layout)
-      setLoading(false)
     }
   }, [t, data])
 
@@ -97,7 +99,9 @@ function Graph({ data, loading, setLoading, t, setT, marks }) {
   }
 
   useEffect(() => {
-    return () => clearInterval(intervalId)
+    if (typeof window !== 'undefined') {
+      return () => clearInterval(intervalId)
+    }
   }, [])
 
   const handleChange = (_, newValue) => {

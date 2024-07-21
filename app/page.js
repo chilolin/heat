@@ -14,9 +14,10 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import { LocalizationProvider } from '@mui/x-date-pickers-pro/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs'
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker'
-import Graph from '@/components/graph'
+import dynamic from 'next/dynamic'
 import { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
+const Graph = dynamic(() => import('@/components/graph'), { ssr: false })
 
 export default function Home() {
   const [data, setData] = useState([])
@@ -34,13 +35,15 @@ export default function Home() {
   const ref = useRef(null)
 
   useEffect(() => {
-    fetch(`/api/parse-json?duration=${duration}`)
-      .then((res) => res.json())
-      .then(({ data, hotTopics }) => {
-        setData(data)
-        setHotTopics(hotTopics)
-        setLoading(false)
-      })
+    if (typeof window !== 'undefined') {
+      fetch(`/api/parse-json?duration=${duration}`)
+        .then((res) => res.json())
+        .then(({ data, hotTopics }) => {
+          setData(data)
+          setHotTopics(hotTopics)
+          setLoading(false)
+        })
+    }
   }, [])
 
   const handleChange = (event) => {
@@ -89,27 +92,31 @@ export default function Home() {
   })
 
   useEffect(() => {
-    const hotTopic = hotTopics[t]
-    if (hotTopic) {
-      ref.current.scrollTo(0, 0)
-      setTitle(hotTopic.title)
-      setSummary(hotTopic.summary)
-      setRanking(hotTopic.comments)
+    if (typeof window !== 'undefined') {
+      const hotTopic = hotTopics[t]
+      if (hotTopic) {
+        ref.current.scrollTo(0, 0)
+        setTitle(hotTopic.title)
+        setSummary(hotTopic.summary)
+        setRanking(hotTopic.comments)
+      }
     }
   }, [t])
 
   useEffect(() => {
-    if (range && new Date(range[0]) >= new Date('2024-03-01')) {
-      if (duration === 1) {
-        setImgUrl('/2024-03-01_D.png')
+    if (typeof window !== 'undefined') {
+      if (range && new Date(range[0]) >= new Date('2024-03-01')) {
+        if (duration === 1) {
+          setImgUrl('/2024-03-01_D.png')
+        } else {
+          setImgUrl('/2024-03-01_W.png')
+        }
+        setImgYear('（2024-03-01〜）')
       } else {
-        setImgUrl('/2024-03-01_W.png')
+        if (duration === 1) setImgUrl('/2024-01-01_D.png')
+        else setImgUrl('/2024-01-01_W.png')
+        setImgYear('（2024-01-01〜）')
       }
-      setImgYear('（2024-03-01〜）')
-    } else {
-      if (duration === 1) setImgUrl('/2024-01-01_D.png')
-      else setImgUrl('/2024-01-01_W.png')
-      setImgYear('（2024-01-01〜）')
     }
   }, [duration, range])
 

@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { AppBar, Toolbar, Typography, Container } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 
@@ -13,6 +13,10 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = () => {
   const classes = useStyles()
+
+  useEffect(() => {
+    return () => undefined
+  }, [])
 
   return (
     <AppBar position="fixed" sx={{ backgroundColor: 'gray' }}>
