@@ -1,14 +1,13 @@
 'use client'
 
 import React from 'react'
-import { AppBar, Toolbar, Typography, Button, Container } from '@mui/material'
+import { AppBar, Toolbar, Typography, Container } from '@mui/material'
 import { makeStyles } from '@mui/styles'
 
 // スタイルの定義
 const useStyles = makeStyles((theme) => ({
-  title: {
-    flexGrow: 1,
-    color: 'black',
+  logo: {
+    height: 60,
   },
 }))
 
@@ -16,12 +15,10 @@ const Header = () => {
   const classes = useStyles()
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'whitesmoke' }}>
+    <AppBar position="fixed" sx={{ backgroundColor: 'gray' }}>
       <Container>
         <Toolbar>
-          <Typography variant="h6" className={classes.title}>
-            HEAT
-          </Typography>
+          <img src="/logo.png" alt="Logo" className={classes.logo} />
         </Toolbar>
       </Container>
     </AppBar>

@@ -9,7 +9,7 @@ import { LoadingButton } from '@mui/lab'
 
 const layout = {
   autosize: false,
-  height: 700,
+  height: 650,
   scene: {
     aspectratio: {
       x: 1,
@@ -46,7 +46,7 @@ const layout = {
       zeroline: false,
     },
   },
-  width: 700,
+  width: 650,
 }
 
 function Graph({ data, loading, setLoading, t, setT, marks }) {
@@ -111,8 +111,8 @@ function Graph({ data, loading, setLoading, t, setT, marks }) {
     >
       <Box
         sx={{
-          width: 700,
-          height: 700,
+          width: 650,
+          height: 650,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -122,7 +122,7 @@ function Graph({ data, loading, setLoading, t, setT, marks }) {
         {loading && <CircularProgress />}
       </Box>
       <Box
-        sx={{ width: 700, display: 'flex', alignItems: 'center', gap: '10px' }}
+        sx={{ width: 670, display: 'flex', alignItems: 'center', gap: '10px' }}
       >
         <Box sx={{ display: 'flex', gap: '4px', paddingRight: '12px' }}>
           <LoadingButton
@@ -150,6 +150,13 @@ function Graph({ data, loading, setLoading, t, setT, marks }) {
           aria-label="Default"
           max={data[0]?.length - 1 ?? 0}
           marks={marks}
+          // sx={{
+          //   '&.MuiSlider-root': {
+          //     backgroundImage: 'url("/2024-01-01_D.png")',
+          //     backgroundSize: 'cover',
+          //     backgroundPosition: 'center',
+          //   },
+          // }}
         />
       </Box>
     </Box>

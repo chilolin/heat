@@ -16,6 +16,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs'
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker'
 import Graph from '@/components/graph'
 import { useEffect, useState, useRef } from 'react'
+import Image from 'next/image'
 
 export default function Home() {
   const [data, setData] = useState([])
@@ -28,6 +29,8 @@ export default function Home() {
   const [title, setTitle] = useState('')
   const [summary, setSummary] = useState('')
   const [ranking, setRanking] = useState([])
+  const [imgUrl, setImgUrl] = useState('')
+  const [imgYear, setImgYear] = useState('（2024-01-01〜）')
   const ref = useRef(null)
 
   useEffect(() => {
@@ -95,105 +98,145 @@ export default function Home() {
     }
   }, [t])
 
+  useEffect(() => {
+    if (range && new Date(range[0]) >= new Date('2024-03-01')) {
+      if (duration === 1) {
+        setImgUrl('/2024-03-01_D.png')
+      } else {
+        setImgUrl('/2024-03-01_W.png')
+      }
+      setImgYear('（2024-03-01〜）')
+    } else {
+      if (duration === 1) setImgUrl('/2024-01-01_D.png')
+      else setImgUrl('/2024-01-01_W.png')
+      setImgYear('（2024-01-01〜）')
+    }
+  }, [duration, range])
+
   return (
     <main className={styles.main}>
-      <Box sx={{ width: '100%', height: '10px' }} />
-      <Stack
-        direction={'row'}
-        sx={{
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-        spacing={5}
-      >
+      <Box sx={{ width: '100%', height: '35px' }} />
+      <Stack direction={'column'}>
+        <Stack
+          direction={'row'}
+          sx={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          spacing={5}
+        >
+          <Box
+            sx={{
+              width: '20%',
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <FormGroup sx={{ width: '100%' }}>
+              <Typography
+                variant="h6"
+                sx={{ color: '#1976d2', fontWeight: 'bold' }}
+              >
+                検索
+              </Typography>
+              <Box sx={{ height: '5px' }} />
+              <InputLabel id="demo-simple-select-label">トピック</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={category}
+                label="検索トピック"
+                onChange={handleChange}
+              >
+                <MenuItem value={10}>松本人志</MenuItem>
+              </Select>
+              <Box sx={{ height: '10px' }} />
+              <InputLabel id="demo-simple-select-label">期間</InputLabel>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['DateRangePicker']}>
+                  <DateRangePicker
+                    localeText={{ start: '開始', end: '終了' }}
+                    value={range}
+                    onChange={handleRange}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+              <Box sx={{ height: '10px' }} />
+              <InputLabel id="demo-simple-select-label">間隔</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={duration}
+                label="間隔"
+                onChange={handleDuration}
+              >
+                <MenuItem value={1}>1日</MenuItem>
+                <MenuItem value={7}>1週間</MenuItem>
+              </Select>
+            </FormGroup>
+            <Box
+              sx={{ height: '300px', marginTop: '30px', overflow: 'scroll' }}
+              ref={ref}
+            >
+              <Typography
+                variant="h6"
+                sx={{ color: '#1976d2', fontWeight: 'bold' }}
+              >
+                ホットトピック
+              </Typography>
+              <Box sx={{ height: '5px' }} />
+              <InputLabel id="demo-simple-select-label">タイトル</InputLabel>
+              <Typography>{title}</Typography>
+              <Box sx={{ height: '5px' }} />
+              <InputLabel id="demo-simple-select-label">要約</InputLabel>
+              <Typography>{summary}</Typography>
+              <Box sx={{ height: '5px' }} />
+              <InputLabel id="demo-simple-select-label">
+                コメントランキング
+              </InputLabel>
+              {ranking.map((rank, index) => {
+                return (
+                  <Typography key={index}>
+                    {index + 1}位: {rank}
+                  </Typography>
+                )
+              })}
+            </Box>
+          </Box>
+          <Graph
+            data={data}
+            loading={loading}
+            setLoading={setLoading}
+            t={t}
+            setT={setT}
+            marks={marks}
+          />
+        </Stack>
+
+        <Box sx={{ width: '100%', height: '35px' }} />
+
         <Box
           sx={{
-            width: '20%',
             display: 'flex',
             flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
-          <FormGroup sx={{ width: '100%' }}>
-            <Typography
-              variant="h6"
-              sx={{ color: '#1976d2', fontWeight: 'bold' }}
-            >
-              検索
-            </Typography>
-            <Box sx={{ height: '5px' }} />
-            <InputLabel id="demo-simple-select-label">トピック</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={category}
-              label="検索トピック"
-              onChange={handleChange}
-            >
-              <MenuItem value={10}>松本人志</MenuItem>
-            </Select>
-            <Box sx={{ height: '10px' }} />
-            <InputLabel id="demo-simple-select-label">期間</InputLabel>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={['DateRangePicker']}>
-                <DateRangePicker
-                  localeText={{ start: '開始', end: '終了' }}
-                  value={range}
-                  onChange={handleRange}
-                />
-              </DemoContainer>
-            </LocalizationProvider>
-            <Box sx={{ height: '10px' }} />
-            <InputLabel id="demo-simple-select-label">間隔</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={duration}
-              label="間隔"
-              onChange={handleDuration}
-            >
-              <MenuItem value={1}>1日</MenuItem>
-              <MenuItem value={7}>1週間</MenuItem>
-            </Select>
-          </FormGroup>
-          <Box
-            sx={{ height: '300px', marginTop: '30px', overflow: 'scroll' }}
-            ref={ref}
+          <Typography
+            variant="h6"
+            sx={{
+              width: '930.1px',
+              color: '#1976d2',
+              fontWeight: 'bold',
+            }}
           >
-            <Typography
-              variant="h6"
-              sx={{ color: '#1976d2', fontWeight: 'bold' }}
-            >
-              ホットトピック
-            </Typography>
-            <Box sx={{ height: '5px' }} />
-            <InputLabel id="demo-simple-select-label">タイトル</InputLabel>
-            <Typography>{title}</Typography>
-            <Box sx={{ height: '5px' }} />
-            <InputLabel id="demo-simple-select-label">要約</InputLabel>
-            <Typography>{summary}</Typography>
-            <Box sx={{ height: '5px' }} />
-            <InputLabel id="demo-simple-select-label">
-              コメントランキング
-            </InputLabel>
-            {ranking.map((rank, index) => {
-              return (
-                <Typography key={index}>
-                  {index + 1}位: {rank}
-                </Typography>
-              )
-            })}
-          </Box>
+            感情の推移 {imgYear}
+          </Typography>
+          <Image src={imgUrl} width={800} height={400} />
         </Box>
-        <Graph
-          data={data}
-          loading={loading}
-          setLoading={setLoading}
-          t={t}
-          setT={setT}
-          marks={marks}
-        />
       </Stack>
     </main>
   )

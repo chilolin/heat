@@ -129,8 +129,6 @@ export async function GET(req) {
     params1.get('end')
   )
 
-  console.log(hotTopics)
-
   return Response.json({
     data,
     hotTopics,
